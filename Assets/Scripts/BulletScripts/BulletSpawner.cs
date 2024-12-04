@@ -14,9 +14,9 @@ public class BulletSpawner : MonoBehaviour
     {
         _pool = new ObjectPool<Bullet>
             (createFunc: () => Create(),
-            actionOnGet: (obj) => ActionOnGet(obj),
-            actionOnRelease: (obj) => ActionOnRelease(obj),
-            actionOnDestroy: (obj) => DestroyObj(obj),
+            actionOnGet: (bullet) => ActivateObj(bullet),
+            actionOnRelease: (bullet) => DeactivateObj(bullet),
+            actionOnDestroy: (bullet) => DestroyObj(bullet),
             collectionCheck: false,
             defaultCapacity: _poolCapacity,
             maxSize: _maxSize);
@@ -27,37 +27,36 @@ public class BulletSpawner : MonoBehaviour
         _pool.Get();
     }
 
-    protected void ReleaseObj(Bullet obj)
+    protected void ReleaseObj(Bullet bullet)
     {
-        _pool.Release(obj);
+        _pool.Release(bullet);
     }
 
     protected virtual Bullet Create()
     {
-        var copy = Instantiate(_prefab, _spawnZone.position, Quaternion.identity);
-
-        return copy;
+        return Instantiate(_prefab, _spawnZone.position, _spawnZone.rotation);
     }
 
-    protected virtual void ActionOnGet(Bullet obj)
+    protected virtual void ActivateObj(Bullet bullet)
     {
-        obj.transform.position = _spawnZone.position;
-        obj.gameObject.SetActive(true);
+        bullet.transform.position = _spawnZone.position;
+        bullet.transform.rotation = _spawnZone.rotation;
+        bullet.gameObject.SetActive(true);
 
-        obj.Collided += ReleaseObj;
-        obj.Lost += ReleaseObj;
+        bullet.Collided += ReleaseObj;
+        bullet.Lost += ReleaseObj;
     }
 
-    protected virtual void ActionOnRelease(Bullet obj)
+    protected virtual void DeactivateObj(Bullet bullet)
     {
-        obj.gameObject.SetActive(false);
+        bullet.gameObject.SetActive(false);
 
-        obj.Collided -= ReleaseObj;
-        obj.Lost -= ReleaseObj;
+        bullet.Collided -= ReleaseObj;
+        bullet.Lost -= ReleaseObj;
     }
 
-    private void DestroyObj(Bullet obj)
+    private void DestroyObj(Bullet bullet)
     {
-        Destroy(obj.gameObject);
+        Destroy(bullet.gameObject);
     }
 }

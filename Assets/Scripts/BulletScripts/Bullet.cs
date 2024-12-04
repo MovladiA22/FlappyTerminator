@@ -17,10 +17,10 @@ public class Bullet : MonoBehaviour
 
     private void Update()
     {
-        if (Vector2.Distance(_startedPosition, transform.position) > _maxDistance)
+        if (transform.position.IsEnoughClose(_startedPosition, _maxDistance) == false)
             Lost?.Invoke(this);
     }
 
-    protected void InvokeEvent(Bullet bullet) =>
+    protected void InvokeEventCollided(Bullet bullet) =>
         Collided?.Invoke(bullet);
 }

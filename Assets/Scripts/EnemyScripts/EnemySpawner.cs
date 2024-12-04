@@ -4,6 +4,9 @@ using UnityEngine;
 public class EnemySpawner : MonoBehaviour
 {
     [SerializeField] private Enemy[] _enemies;
+    [SerializeField] private Transform _spawnZone;
+    [SerializeField] private float _minPositionY;
+    [SerializeField] private float _maxPositionY;
     [SerializeField] private float _spawnDelay;
 
     private void Awake()
@@ -19,9 +22,11 @@ public class EnemySpawner : MonoBehaviour
     
     private void Spawn(int index)
     {
+        _enemies[index].transform.position = new Vector2(_spawnZone.position.x, Random.Range(_minPositionY, _maxPositionY));
         _enemies[index].gameObject.SetActive(true);
 
         _enemies[index].Died += Release;
+        _enemies[index].Lost += Release;
     }
 
     private void Release(Enemy enemy)
@@ -29,6 +34,7 @@ public class EnemySpawner : MonoBehaviour
         enemy.gameObject.SetActive(false);
 
         enemy.Died -= Release;
+        enemy.Lost -= Release;
     }
 
     private IEnumerator Spawning()

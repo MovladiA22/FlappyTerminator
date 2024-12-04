@@ -6,6 +6,6 @@ public class EnemyBullet : Bullet, IDeathly
     {
         if (collision.gameObject.TryGetComponent<Enemy>(out Enemy enemy) == false &&
             collision.gameObject.TryGetComponent<EnemyBullet>(out EnemyBullet enemyBullet) == false)
-            InvokeEvent(this);
+            InvokeEventCollided(this);
     }
 }

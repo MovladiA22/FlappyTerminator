@@ -6,6 +6,6 @@ public class PlayerBullet : Bullet
     {
         if (collision.gameObject.TryGetComponent<Player>(out Player player) == false &&
             collision.gameObject.TryGetComponent<PlayerBullet>(out PlayerBullet playerBullet) == false)
-            InvokeEvent(this);
+            InvokeEventCollided(this);
     }
 }
